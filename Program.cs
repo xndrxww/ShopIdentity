@@ -1,5 +1,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.FileProviders;
+using Microsoft.Extensions.FileProviders.Physical;
 using ShopIdentity;
 using ShopIdentity.Models;
 
@@ -10,7 +12,7 @@ namespace ProductsIdentity
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
-            var connectionString = builder.Configuration.GetConnectionString("DbConnection");
+            var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 
             builder.Services.AddDbContext<AuthDbContext>(options =>
             {
@@ -42,6 +44,8 @@ namespace ProductsIdentity
                 config.LogoutPath = "/Auth/Logout";
             });
 
+            builder.Services.AddControllersWithViews();
+
             var app = builder.Build();
             
             using (var scope = app.Services.CreateScope())
@@ -60,8 +64,16 @@ namespace ProductsIdentity
                 }
             }
             
+            app.UseStaticFiles(new StaticFileOptions
+            {
+                FileProvider = new PhysicalFileProvider(Path.Combine(app.Environment.ContentRootPath, "Styles"))
+            });
             app.UseIdentityServer();
-            app.MapGet("/", () => "Hello World!");
+            app.UseRouting();
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapDefaultControllerRoute();
+            });
             app.Run();
         }
     }
