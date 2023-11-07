@@ -1,19 +1,22 @@
 ﻿@model LoginViewModel
 <head>
-    <link href=@Url.Content("~/styles/app.css") rel="stylesheet" type="text/css"/>
+    <link href="D:\C# Projects\ShopIdentity\Styles\app.css" rel="stylesheet" type="text/css" asp-append-version="true" />
 </head>
 <form asp-controller="Auth" asp-action="Login" method="post">
     <input type="hidden" asp-for="ReturnUrl" />
-    <div>Login</div>
+    <div class="header">Аутентификация</div>
     <div class="block">
-        <label>Username</label>
-        <input asp-for="UserName" class="input"/>
+        <label>Имя пользователя</label>
+        <input asp-for="Username" class="input"/>
+        <span asp-validation-for="Username"></span>
     </div>
     <div class="block">
-        <label>Password</label>
+        <label>Пароль</label>
         <input asp-for="Password" class="input"/>
+        <span asp-validation-for="Password"></span>
     </div>
     <div class="block">
-        <button type="submit" class="button">Sign In</button>
+        <button type="submit" class="button">Войти</button>
     </div>
+    <a asp-controller="Auth" asp-action="Registration" asp-route-returnUrl="@Model.ReturnUrl">Перейти к регистрации</a>
 </form>
